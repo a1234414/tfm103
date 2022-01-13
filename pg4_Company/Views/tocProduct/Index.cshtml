@@ -1,0 +1,40 @@
+﻿<div id="productPanel">
+    <button v-on:click="generate">資料生成</button>
+    <div>
+        <table class="table">
+            <tr>
+                <td>商品名稱</td>
+                <td>價格</td>
+                <td>簡介</td>
+            </tr>   
+            <tr v-for="p in products">
+                @*to do: 放圖片*@
+                <td><img src="" /></td>
+                <td>{{p.Name}}</td>
+                <td>{{p.Price}}</td>
+                <td>{{p.Description_S}}</td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+<script>
+    var app = new Vue({
+        el: '#productPanel',
+        data: {
+            products: [],
+        },
+        methods: {
+            generate: function () {
+                let self = this;
+                fetch('/tocProduct/Generate').then(function (r) { return r.json() })
+                    .then(function (r) { self.products = r });
+            }
+        },
+        mounted: function () {
+            let self = this;
+            fetch('/tocProduct/GetProducts').then(function (r) { return r.json() })
+                .then(function (r) { self.products = r });
+        }
+    })
+</script>

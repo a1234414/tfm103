@@ -1,0 +1,54 @@
+﻿<h1>商品上架</h1>
+<hr />
+
+
+<div class="container-fluid">
+    <div class="row">
+        <form action="~/Product/Upload" method="post" enctype="multipart/form-data">
+
+            <div>
+                <label class="form-label">課程名稱</label>
+                <input class="form-control" type="text" name="Name" id="inp1"/>
+            </div>
+
+            <div>
+                <label class="form-label">課程訂價</label>
+                <input class="form-control" type="number" name="Price" />
+            </div>
+
+            <div>
+                <label class="form-label">課程簡述</label>
+                <textarea class="form-control" name="Description_S"></textarea>
+            </div>
+
+            <div>
+                <label class="form-label">課程詳述</label>
+                <textarea class="form-control" name="Description_L" rows="10" cols="20"></textarea>
+            </div>
+
+            <div>
+                <label class="col-form-label">活動開始日期</label>
+                <input class="form-control" type="date" name="StartDate" />
+            </div>
+
+            <div>
+                <label class="col-form-label">活動結束日期</label>
+                <input class="form-control" type="date" name="EndDate" />
+            </div>
+
+            <div>
+                <label class="form-label">是否上架</label>
+                <input type="checkbox" name="IsSold" value="true" />
+            </div>
+
+            <div>
+                <label class="form-label">課程預覽圖片</label>
+                <input class="form-control" type="file" name="Pic" multiple="multiple" />
+            </div>
+
+
+            <button type="submit" class="btn btn-primary">上架</button>
+        </form>
+    </div>
+
+</div>

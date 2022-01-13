@@ -1,0 +1,76 @@
+﻿
+<h1>商品編輯</h1>
+<hr />
+
+<form action="~/Product/EditUpdate" method="post">
+    <div class="container" id="EditTable">
+
+        <div class="form-group">
+            <label for="name" class="form-label">課程名稱</label>
+            <input class="form-control" type="text" id="name" v-model="products.name" name="name" required />
+        </div>
+
+        <div class="form-group">
+            <label class="form-label" name="Price">課程訂價</label>
+            <input class="form-control" type="number" name="Price" v-model="products.price" required />
+        </div>
+
+        <div class="form-group">
+            <label class="form-label" name="Description_S">課程簡述</label>
+            <textarea class="form-control" name="Description_S" v-model="products.description_S"></textarea>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label" name="Description_L">課程詳述</label>
+            <textarea class="form-control" name="Description_L" v-model="products.description_L" rows="10" cols="20"></textarea>
+        </div>
+
+        <div class="form-group">
+            <label class="col-form-label" name="StartDate">活動開始日期</label>
+            <input class="form-control" type="datetime-local" name="StartDate" v-model="products.startDate" />
+        </div>
+
+        <div class="form-group">
+            <label class="col-form-label" name="EndDate">活動結束日期</label>
+            <input class="form-control" type="datetime-local" name="EndDate" v-model="products.endDate" value="" />
+        </div>
+
+        <div class="form-group">
+            <label class="form-label" name="IsSold">是否上架</label>
+            <input type="checkbox" name="IsSold" value="true" v-model="products.isSold" />
+        </div>
+
+
+        <button class="btn btn-primary" type="submit">確認修改</button>
+        <button class="btn btn-dark" onclick="location.href='/Product/MyProducts'">取消修改</button>
+
+        @*<div>
+                <label class="form-label">課程預覽圖片</label>
+                <input class="form-control" type="file" name="Pic" multiple="multiple" />
+            </div>*@
+
+
+    </div>
+
+</form>
+
+
+<script>
+
+
+    var app = new Vue({
+        el: '#EditTable',
+        data: {
+            products: []
+
+        },   ///data
+
+        mounted: function () {
+            var self = this;
+            fetch("/Product/EditSession")
+                .then(function (res) { return res.json() })
+                .then(function (d) { self.products = d[0] })
+        } //mounted
+    })
+
+</script>

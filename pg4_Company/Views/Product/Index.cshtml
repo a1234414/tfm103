@@ -1,0 +1,73 @@
+﻿<h1>我的商品</h1>
+
+<h2 style="text-align:right;"><a href="/Product/Create">新增商品</a></h2>
+
+<div class="container-fluid" id="ProductTable">
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">編號</th>
+                <th scope="col">商品名稱</th>
+                <th scope="col">價格</th>
+                <th scope="col">開始日期</th>
+                <th scope="col">結束日期</th>
+                <th scope="col">上架狀態</th>
+                <th scope="col">編輯</th>
+                <th scope="col">明細</th>
+                <th scope="col">下架刪除</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <tr v-for="pd in products">
+
+                <td>{{pd.id}}</td>    <!---開頭小寫--->
+                <td>{{pd.name}}</td>
+                <td>{{pd.price}}</td>
+                <td>{{pd.startDate}}</td>
+                <td>{{pd.endDate}}</td>
+                <td>{{pd.isSold}}</td>
+
+                <td><button class="btn btn-dark" v-on:click="editPd(pd.id)" onclick="location.href='/Product/Edit'">Edit</button></td>
+                <td><button class="btn btn-primary" v-on:click="">Detail </button></td>
+                <td><button class="btn btn-danger" v-on:click="">Delet</button></td>
+
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+
+<script>
+    //====================Vue================
+    var app = new Vue({
+        el: '#ProductTable',
+        data: {
+            products: []
+        },   ///data
+
+        mounted: function () {
+            let self = this;
+
+            fetch("/Product/ProductSource")
+                .then(function (res) { return res.json() })
+                .then(function (d) { self.products = d })
+        }, //mounted
+
+        methods: {
+            editPd: function (id) {
+                console.log("ProductId: " + id);
+                let data = new FormData();
+                data.append("id", id);   //key value
+
+                fetch("EditSource", {
+                    body: data,
+                    method: "POST",
+                })
+                    .then(res => res.text());
+                /*  .then(function (d) { alert("ProductID: "+ d+ "   轉至Edit") });  DEBUG*/
+            }
+        }//methods
+    })
+
+</script>

@@ -1,0 +1,60 @@
+﻿<div id="orderPanel">
+    <div>
+        <label>起始時間: </label>
+        <input type="date" id="StartDate" name="StartDate" />
+        <label>結束時間: </label>
+        <input type="date" id="EndDate" name="EndDate" />
+        <label>名稱包含: </label>
+        <input type="text" id="NameContain" name="NameContain" />
+        <label>圖表類型</label>
+        <select>
+            <option>每日收入</option>
+            <option>商品收入</option>
+        </select>
+    </div>
+
+    <hr />
+
+    <div>
+        <canvas id="test"></canvas>
+    </div>
+</div>
+
+<script>
+    var app = new Vue({
+        el: '#orderPanel',
+        data: {
+
+        },
+        methods: {
+
+        },
+        mounted: {
+
+        }
+    });
+</script>
+
+@*var xValues = ['A', 'B', 'C'];
+    var yValues = [12, 9, 13];
+    var barColors = ['red', 'blue', 'green'];
+
+    new Chart("test", {
+        type: "bar",
+        data: {
+            labels: xValues,
+            datasets: [{
+                backgroundColor: barColors,
+                data: yValues
+            }]
+        },
+        options: {
+            scales: {
+                yAxes: [{ ticks: { beginAtZero: true} }]
+            },
+            title: {
+                display: true,
+                text: 'test'
+            }
+        }
+    });*@

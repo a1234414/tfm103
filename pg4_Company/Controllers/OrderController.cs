@@ -91,107 +91,106 @@ namespace Project_TFM10304.Controllers
             return "";
         }
 
-        public void Init()
-        {
-            ClaimsPrincipal thisUser = this.User;
-            string userId = thisUser.FindFirst(ClaimTypes.NameIdentifier).Value;
+        //public void Init()
+        //{
+        //    ClaimsPrincipal thisUser = this.User;
+        //    string userId = thisUser.FindFirst(ClaimTypes.NameIdentifier).Value;
 
+        //    Order o1 = new Order
+        //    {
+        //        UserId = userId,
+        //        Date = DateTime.Now
+        //    };
+        //    Order o2 = new Order
+        //    {
+        //        UserId = userId,
+        //        Date = DateTime.Now
+        //    };
+        //    Order o3 = new Order
+        //    {
+        //        UserId = userId,
+        //        Date = DateTime.Now
+        //    };
+        //    _dbContext.Order.AddRange(o1, o2, o3);
+        //    _dbContext.SaveChanges();
 
-            Order o1 = new Order
-            {
-                UserId = userId,
-                Date = DateTime.Now
-            };
-            Order o2 = new Order
-            {
-                UserId = userId,
-                Date = DateTime.Now
-            };
-            Order o3 = new Order
-            {
-                UserId = userId,
-                Date = DateTime.Now
-            };
-            _dbContext.Order.AddRange(o1, o2, o3);
-            _dbContext.SaveChanges();
+        //    OrderDetail od1 = new OrderDetail
+        //    {
+        //        OrderId = o1.OrderId,
+        //        ProductId = 1,
+        //        Quantity = 4,
+        //        IsPaid = true
+        //    };
+        //    OrderDetail od2 = new OrderDetail
+        //    {
+        //        OrderId = o2.OrderId,
+        //        ProductId = 2,
+        //        Quantity = 2,
+        //        IsPaid = true
+        //    };
+        //    OrderDetail od3 = new OrderDetail
+        //    {
+        //        OrderId = o3.OrderId,
+        //        ProductId = 3,
+        //        Quantity = 2,
+        //        IsPaid = true
+        //    };
 
-            OrderDetail od1 = new OrderDetail
-            {
-                OrderId = o1.OrderId,
-                ProductId = 1005,
-                Quantity = 4,
-                IsPaid = true
-            };
-            OrderDetail od2 = new OrderDetail
-            {
-                OrderId = o2.OrderId,
-                ProductId = 1005,
-                Quantity = 2,
-                IsPaid = true
-            };
-            OrderDetail od3 = new OrderDetail
-            {
-                OrderId = o3.OrderId,
-                ProductId = 1005,
-                Quantity = 2,
-                IsPaid = true
-            };
+        //    _dbContext.OrderDetail.AddRange(od1, od2, od3);
+        //    _dbContext.SaveChanges();
+        //}
 
-            _dbContext.OrderDetail.AddRange(od1, od2, od3);
-            _dbContext.SaveChanges();
-        }
+        //public void Dg2()
+        //{
+        //    Product p1 = new Product
+        //    {
+        //        Name = "金工初階班",
+        //        Price = 1000,
+        //        StartDate = DateTime.Now.AddDays(-2),
+        //        EndDate = DateTime.Now.AddDays(-2),
+        //        CompanyUserId = "fdf8443c-e0c9-4b7d-a6a1-b8222b7e0242"
+        //    };
+        //    Product p2 = new Product
+        //    {
+        //        Name = "金工進階班",
+        //        Price = 2000,
+        //        StartDate = DateTime.Now.AddDays(-6),
+        //        EndDate = DateTime.Now.AddDays(-6),
+        //        CompanyUserId = "fdf8443c-e0c9-4b7d-a6a1-b8222b7e0242"
+        //    };
 
-        public void Dg2()
-        {
-            Product p1 = new Product
-            {
-                Name = "金工初階班",
-                Price = 1000,
-                StartDate = DateTime.Now.AddDays(-2),
-                EndDate = DateTime.Now.AddDays(-2),
-                CompanyUserId = "fdf8443c-e0c9-4b7d-a6a1-b8222b7e0242"
-            };
-            Product p2 = new Product
-            {
-                Name = "金工進階班",
-                Price = 2000,
-                StartDate = DateTime.Now.AddDays(-6),
-                EndDate = DateTime.Now.AddDays(-6),
-                CompanyUserId = "fdf8443c-e0c9-4b7d-a6a1-b8222b7e0242"
-            };
+        //    Order o1 = new Order
+        //    {
+        //        UserId = "0f75dd28-10b0-48e7-b7da-e0b110f9ee41",
+        //        Date = DateTime.Now
+        //    };
+        //    Order o2 = new Order
+        //    {
+        //        UserId = "0f75dd28-10b0-48e7-b7da-e0b110f9ee41",
+        //        Date = DateTime.Now
+        //    };
 
-            Order o1 = new Order
-            {
-                UserId = "0f75dd28-10b0-48e7-b7da-e0b110f9ee41",
-                Date = DateTime.Now
-            };
-            Order o2 = new Order
-            {
-                UserId = "0f75dd28-10b0-48e7-b7da-e0b110f9ee41",
-                Date = DateTime.Now
-            };
+        //    _dbContext.Product.AddRange(p1, p2);
+        //    _dbContext.Order.AddRange(o1, o2);
+        //    _dbContext.SaveChanges();
 
-            _dbContext.Product.AddRange(p1, p2);
-            _dbContext.Order.AddRange(o1, o2);
-            _dbContext.SaveChanges();
+        //    OrderDetail od1 = new OrderDetail
+        //    {
+        //        OrderId = o1.OrderId,
+        //        ProductId = p1.Id,
+        //        Quantity = 4,
+        //        IsPaid = true
+        //    };
+        //    OrderDetail od2 = new OrderDetail
+        //    {
+        //        OrderId = o2.OrderId,
+        //        ProductId = p2.Id,
+        //        Quantity = 2,
+        //        IsPaid = true
+        //    };
 
-            OrderDetail od1 = new OrderDetail
-            {
-                OrderId = o1.OrderId,
-                ProductId = p1.Id,
-                Quantity = 4,
-                IsPaid = true
-            };
-            OrderDetail od2 = new OrderDetail
-            {
-                OrderId = o2.OrderId,
-                ProductId = p2.Id,
-                Quantity = 2,
-                IsPaid = true
-            };
-
-            _dbContext.OrderDetail.AddRange(od1, od2);
-            _dbContext.SaveChanges();
-        }
+        //    _dbContext.OrderDetail.AddRange(od1, od2);
+        //    _dbContext.SaveChanges();
+        //}
     }
 }

@@ -70,7 +70,7 @@ namespace Project_TFM10304.Controllers
             return "";
         }
 
-        public async Task<string> PassedOrders(int passedDays)
+        public string PassedOrders(int passedDays)
         {
             ClaimsPrincipal thisUser = this.User;
             var IsCompany = thisUser.IsInRole("Company");

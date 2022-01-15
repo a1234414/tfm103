@@ -5,7 +5,8 @@ namespace Project_TFM10304.Models
     public class OrderDetail
     {
         [ForeignKey("Order")]
-        public int OrderId { get; set; }
+        //有改model 從int > string
+        public string OrderId { get; set; }
         public Order Order { get; set; }
         [ForeignKey("Product")]
         public int ProductId { get; set; }

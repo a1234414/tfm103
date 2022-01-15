@@ -4,18 +4,49 @@
 <form class="form-horizontal" role="form" action="@Url.Action("SpgatewayPayBill", "Home")" method="POST">
     <div class="row">
         <!--
-        <div class="col-md-12 md-block">
-                <label>訂單編號</label>
-                <input type="text"
-                       class="form-control"
-                       required="required"
-                       name="orderNumber"
-                       maxlength="20">
+    <div class="col-md-12 md-block">
+            <label>訂單編號</label>
+            <input type="text"
+                   class="form-control"
+                   required="required"
+                   name="orderNumber"
+                   maxlength="20">
+    </div>
+        -->
+
+        <div id="orderlistPanel">
+            <h1>訂單詳情</h1>
+            <div>收件人姓名: @Model.fReceiver</div>
+            <div>收件人地址: @Model.fAddress</div>
+            <div>連絡電話: @Model.fPhone</div>
+            <div>連絡信箱: @Model.fEmail</div>
+            <div>訂單詳情: </div>
+            <table>
+                <tr>
+                    <td>商品名稱</td>
+                    <td>商品數量</td>
+                    <td>小計</td>
+                </tr>
+                @{ 
+                    int i = 0;
+                    for (i = 0; i < Model.ProductIds.Count(); i++)
+                    {
+                        <tr>@Model.ProductIds</tr>
+                        <tr>@Model.Qtys[i]</tr>
+                        <tr></tr>
+                    }
+                }
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </table>
+            <div>
+                <button>去付款</button>
+            </div>
         </div>
-            -->
-        <div>
-            @*to do: 訂單詳情呈現*@
-        </div>
+
 
         <div class="col-md-12 md-block">
             <label>訂單金額</label>

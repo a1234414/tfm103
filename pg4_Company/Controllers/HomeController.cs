@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -52,15 +53,17 @@ namespace pg4_Company.Controllers
             return View();
         }
 
+        //原本Cartlist的下一頁, 內容是Cartlist下方的表單
+        //舊碼
+        //舊碼
         public IActionResult Orderlist()
         {
-            //var amount = HttpContext.Session.GetString("Amount");
-            //ViewBag.Amount = amount;
-            //return View(ViewBag);
             return View();
         }
 
-        //接cartlist
+        //原本成立訂單會來的地方, 把amount總額存進session
+        //舊碼
+        //舊碼
         [HttpPost]
         public void payAmount([FromForm] String amount)
         {
@@ -68,37 +71,52 @@ namespace pg4_Company.Controllers
             Console.WriteLine(amount);
         }
 
-        //接orderlist
-        [HttpPost]
+        //成立訂單
+        //return的view內容: 確認訂單總額, 選擇付款方式, 確認付款
+        //因為原本已經使用viewbag, 這頁用razor page寫
+
         //[Authorize(Roles = "Customer")]
-        public IActionResult ThirdPartyPay([FromForm]OrderDetailViewModel input)
+        [HttpPost]
+        // string amount, 
+        public IActionResult ThirdPartyPay([FromForm]OrderDetailViewModel data)
         {
-            //訂單總額
-            var amount = HttpContext.Session.GetString("Amount");
-            var productIds = HttpContext.Session.GetString("");
-            ViewBag.Amount = amount;
-
-            OrderDetailViewModel orderDetail = new OrderDetailViewModel
+            if (!ModelState.IsValid)
             {
-                Amount = HttpContext.Session.GetString("Amount"),
-                OrderId = DateTime.Now.ToString("yyyyMMddhhmmss"),
-                //ProductNames = 
-            };
+                var errors = ModelState.Values.SelectMany(v => v.Errors);
+                return Ok($"發生錯誤: {errors}");
+            }
 
-            //訂單寫進資料庫
+            //訂單總額
+            HttpContext.Session.SetString("Amount", data.Amount);
+            ViewBag.Amount = data.Amount;
 
+            //Console.WriteLine(amount);
 
-            //建立viewmodel
+            //在資料庫新增order
+            ClaimsPrincipal thisUser = this.User;
+            var userId = thisUser.FindFirst(ClaimTypes.NameIdentifier).Value;
 
-            //view model丟給view()
+            Order thisOrder = new() { OrderId = "O" + DateTime.Now.ToString("yyyyMMddhhmmss"), UserId = userId, Date = DateTime.Now, fReceiver = data.fReceiver, fAddress = data.fAddress, fEmail = data.fEmail, fPhone = data.fPhone };
+            _dbContext.Add(thisOrder);
+            _dbContext.SaveChanges();
 
-            return View(orderDetail);
+            //在資料庫新增orderDetail
+
+            //foreach(var p in data.pIds)
+            //{
+            //    OrderDetail PforOrderDetail = new() { OrderId = thisOrder.OrderId, ProductId = p.id, }
+            //}
+
+            //在這裡或是在Cartlist.html > ajax.success(): redirect to 訂單詳情
+
+            return View();
         }
         public IActionResult Cartlist()
         {
             return View();
         }
 
+        //called when Cartlist.cshtml vue mounted
         public string CartlistContent()
         {
             //向 Session 取得商品列表

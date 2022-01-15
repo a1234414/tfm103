@@ -261,16 +261,32 @@ namespace pg4_Company.Migrations
 
             modelBuilder.Entity("Project_TFM10304.Models.Order", b =>
                 {
-                    b.Property<int>("OrderId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                    b.Property<string>("OrderId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("Amount")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
+                    b.Property<bool>("IsPaid")
+                        .HasColumnType("bit");
+
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("fAddress")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("fEmail")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("fPhone")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("fReceiver")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("OrderId");
 
@@ -281,8 +297,8 @@ namespace pg4_Company.Migrations
 
             modelBuilder.Entity("Project_TFM10304.Models.OrderDetail", b =>
                 {
-                    b.Property<int>("OrderId")
-                        .HasColumnType("int");
+                    b.Property<string>("OrderId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("ProductId")
                         .HasColumnType("int");

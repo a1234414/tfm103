@@ -135,42 +135,43 @@
             </thead>
         </table>
 
-        <form method="post">
-            <div class="form-horizontal">
-                <div class="form-group">
-                    <label for="fReceiver" class="control-label col-md-2">收件人姓名</label>
-                    <div class="col-md-10">
-                        <input id="fReceiver" name="fReceiver" type="text" class="form-control" required />
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="fPhone" class="control-label col-md-2">收件人手機</label>
-                    <div class="col-md-10">
-                        <input id="fPhone" name="fPhone" class="form-control" required />
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="fEmail" class="control-label col-md-2">收件人信箱</label>
-                    <div class="col-md-10">
-                        <input id="fEmail" name="fEmail" type="email" class="form-control" required />
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="fAddress" class="control-label col-md-2">收件人地址</label>
-                    <div class="col-md-10">
-                        <input id="fAddress" name="fAddress" type="tel" class="form-control" required />
-                    </div>
-                </div>
-                @*<div class="paybtn">
-                     <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">ThirdPartyPay</a>
-                     <a class="btn btn-primary" asp-area="" asp-controller="Home" asp-action="ThirdPartyPay">確認付款</a>
-                </div>*@
-                <div class="btnc btnb">
-                    <button class="btn btn-primary" v-on:click="pay()">成立訂單</button>
-                    <a class="btn btn-dark" href="~/Home/Index">繼續購物</a>
+
+        <div class="form-horizontal">
+            <div class="form-group">
+                <label for="fReceiver" class="control-label col-md-2">收件人姓名</label>
+                <div class="col-md-10">
+                    <input id="fReceiver" name="fReceiver" type="text" class="form-control" required />
                 </div>
             </div>
-        </form>
+            <div class="form-group">
+                <label for="fPhone" class="control-label col-md-2">收件人手機</label>
+                <div class="col-md-10">
+                    <input id="fPhone" name="fPhone" class="form-control" required />
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="fEmail" class="control-label col-md-2">收件人信箱</label>
+                <div class="col-md-10">
+                    <input id="fEmail" name="fEmail" type="email" class="form-control" required />
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="fAddress" class="control-label col-md-2">收件人地址</label>
+                <div class="col-md-10">
+                    <input id="fAddress" name="fAddress" type="tel" class="form-control" required />
+                </div>
+            </div>
+            @*<div class="paybtn">
+                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">ThirdPartyPay</a>
+                 <a class="btn btn-primary" asp-area="" asp-controller="Home" asp-action="ThirdPartyPay">確認付款</a>
+            </div>*@
+
+        </div>
+
+        <div class="btnc btnb">
+            <button class="btn btn-primary" v-on:click="pay()">成立訂單</button>
+            <a class="btn btn-dark" href="~/Home/Index">繼續購物</a>
+        </div>
     </div>
 </div>
 
@@ -231,34 +232,45 @@
                         ids.push(parseInt($('#id_' + count).text()));
                         qtys.push(parseInt($('#count_' + count).val()));
                         names.push($('#name_' + count).text());
-                        prices.push(parseInt($('#price' + count).text()));
+                        prices.push(parseInt($('#price_' + count).text()));
                     }
                     count++;
                 });
 
                 //整理要丟給 Home/ThirdPartyPay 的東西
-                var orderDetail = new FormData();
-                orderDetail.append('ProductIds', ids);
-                orderDetail.append('Qtys', qtys);
-                orderDetail.append('ProductNames', name);
-                orderDetail.append('ProductPrices', prices);
-                orderDetail.append('Amount', amount);
-                orderDetail.append('fReceiver', $('#fReceiver').val());
-                orderDetail.append('fPhone', $('#fPhone').val());
-                orderDetail.append('fEmail', $('#fEmail').val());
-                orderDetail.append('fAddress', $('#fAddress').val());
+                //var orderDetail = new FormData();
+                //orderDetail.append("amount", amount);
+                //orderDetail.append("ProductIds", ids);
+                //orderDetail.append("qtys", qtys);
+                //orderDetail.append("ProductNames", names);
+                //orderDetail.append("ProductPrices", prices);
+                //orderDetail.append("fReceiver", $('#fReceiver').val());
+                //orderDetail.append("fPhone", $('#fPhone').val());
+                //orderDetail.append("fEmail", $('#fEmail').val());
+                //orderDetail.append("fAddress", $('#fAddress').val());
 
-                alert(orderDetail);
+                //var request = new XMLHttpRequest();
+                //request.open("POST", "/Home/ThirdPartyPay");
+                //request.send(orderDetail);
 
                 //丟給Home/ThirdPartyPay
                 $.ajax({
                     type: 'POST',
                     url: "/Home/ThirdPartyPay",
-                    data: orderDetail,
-                    //success: function (e) {
-                    //    //舊碼, 下一頁是ThirdPartyPay > 顯示成立的訂單詳情, 選擇付款方式, 確認總額 > 藍新金流 > 成立後更改訂單IsPaid = true
-                    //    window.location.href = "/Home/Orderlist";
-                    //},
+                    data: {
+                        "amount": amount,
+                        "ProductIds": ids,
+                        "qtys": qtys,
+                        "ProductNames": names,
+                        "ProductPrices": prices,
+                        "fReceiver": $('#fReceiver').val(),
+                        "fPhone": $('#fPhone').val(),
+                        "fEmail": $('#fEmail').val(),
+                        "fAddress": $('#fAddress').val()
+                    },
+                    success: function (e) {
+                       window.location.href = "/Home/Orderlist";
+                    },
                     error: function () {
                         alert("失敗");
                     }

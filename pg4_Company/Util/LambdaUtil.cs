@@ -67,7 +67,6 @@ namespace Pay.Util
             }
             catch (Exception ex)
             {
-                //LogUtil.WriteLog(ex);
                 throw ex;
             }
 

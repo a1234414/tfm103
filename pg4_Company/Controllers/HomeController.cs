@@ -78,7 +78,7 @@ namespace pg4_Company.Controllers
         //[Authorize(Roles = "Customer")]
         [HttpPost]
         // string amount, 
-        public IActionResult ThirdPartyPay([FromForm]OrderDetailViewModel data)
+        public IActionResult ThirdPartyPay([FromForm]OrderCreateViewModel data)
         {
             if (!ModelState.IsValid)
             {
@@ -86,9 +86,9 @@ namespace pg4_Company.Controllers
                 return Ok($"發生錯誤: {errors}");
             }
 
-            //訂單總額
-            HttpContext.Session.SetString("Amount", data.Amount);
-            ViewBag.Amount = data.Amount;
+            //舊碼
+            //HttpContext.Session.SetString("Amount", data.Amount);
+            //ViewBag.Amount = data.Amount;
 
             //Console.WriteLine(amount);
 
@@ -102,14 +102,18 @@ namespace pg4_Company.Controllers
 
             //在資料庫新增orderDetail
 
-            //foreach(var p in data.pIds)
-            //{
-            //    OrderDetail PforOrderDetail = new() { OrderId = thisOrder.OrderId, ProductId = p.id, }
-            //}
+            int i = 0;
+            for (i = 0; i < data.ProductIds.Count(); i++)
+            {
+                OrderDetail PforOrderDetail = new() { OrderId = thisOrder.OrderId, ProductId = data.ProductIds[i], Quantity = data.Qtys[i] };
+                _dbContext.Add(PforOrderDetail);
+                _dbContext.SaveChanges();
+            }
 
-            //在這裡或是在Cartlist.html > ajax.success(): redirect to 訂單詳情
+            OrderDetailViewModel result = new() { OrderId=thisOrder.OrderId, Amount = data.Amount, fAddress = data.fAddress, fEmail = data.fEmail, fPhone = data.fPhone, fReceiver = data.fReceiver, ProductIds = data.ProductIds, ProductNames = data.ProductNames, ProductPrices = data.ProductPrices, Qtys = data.Qtys };
 
-            return View();
+            //redirect to 訂單詳情
+            return View(result);
         }
         public IActionResult Cartlist()
         {

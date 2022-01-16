@@ -12,6 +12,5 @@ namespace Project_TFM10304.Models
         public int ProductId { get; set; }
         public Product Product { get; set; }
         public int Quantity { get; set; }
-        public bool IsPaid { get; set; }
     }
 }

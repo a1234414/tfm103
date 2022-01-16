@@ -161,11 +161,6 @@
                     <input id="fAddress" name="fAddress" type="tel" class="form-control" required />
                 </div>
             </div>
-            @*<div class="paybtn">
-                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">ThirdPartyPay</a>
-                 <a class="btn btn-primary" asp-area="" asp-controller="Home" asp-action="ThirdPartyPay">確認付款</a>
-            </div>*@
-
         </div>
 
         <div class="btnc btnb">
@@ -226,7 +221,7 @@
                 var qtys = [];
                 var names = [];
                 var prices = []
-                //把有勾選的商品, id qty選出來
+                //把有勾選的商品, id qty name price選出來
                 $(".check").each(function () {
                     if ($(this).prop('checked')) {
                         ids.push(parseInt($('#id_' + count).text()));
@@ -236,22 +231,6 @@
                     }
                     count++;
                 });
-
-                //整理要丟給 Home/ThirdPartyPay 的東西
-                //var orderDetail = new FormData();
-                //orderDetail.append("amount", amount);
-                //orderDetail.append("ProductIds", ids);
-                //orderDetail.append("qtys", qtys);
-                //orderDetail.append("ProductNames", names);
-                //orderDetail.append("ProductPrices", prices);
-                //orderDetail.append("fReceiver", $('#fReceiver').val());
-                //orderDetail.append("fPhone", $('#fPhone').val());
-                //orderDetail.append("fEmail", $('#fEmail').val());
-                //orderDetail.append("fAddress", $('#fAddress').val());
-
-                //var request = new XMLHttpRequest();
-                //request.open("POST", "/Home/ThirdPartyPay");
-                //request.send(orderDetail);
 
                 //丟給Home/ThirdPartyPay
                 $.ajax({
@@ -269,7 +248,7 @@
                         "fAddress": $('#fAddress').val()
                     },
                     success: function (e) {
-                       window.location.href = "/Home/Orderlist";
+                       window.location.href = "/Home/OrderDetail";
                     },
                     error: function () {
                         alert("失敗");

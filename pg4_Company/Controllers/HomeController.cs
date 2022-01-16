@@ -53,68 +53,6 @@ namespace pg4_Company.Controllers
             return View();
         }
 
-        //原本Cartlist的下一頁, 內容是Cartlist下方的表單
-        //舊碼
-        //舊碼
-        public IActionResult Orderlist()
-        {
-            return View();
-        }
-
-        //原本成立訂單會來的地方, 把amount總額存進session
-        //舊碼
-        //舊碼
-        [HttpPost]
-        public void payAmount([FromForm] String amount)
-        {
-            HttpContext.Session.SetString("Amount", amount);
-            Console.WriteLine(amount);
-        }
-
-        //成立訂單
-        //return的view內容: 確認訂單總額, 選擇付款方式, 確認付款
-        //因為原本已經使用viewbag, 這頁用razor page寫
-
-        //[Authorize(Roles = "Customer")]
-        [HttpPost]
-        // string amount, 
-        public IActionResult ThirdPartyPay([FromForm]OrderCreateViewModel data)
-        {
-            if (!ModelState.IsValid)
-            {
-                var errors = ModelState.Values.SelectMany(v => v.Errors);
-                return Ok($"發生錯誤: {errors}");
-            }
-
-            //舊碼
-            //HttpContext.Session.SetString("Amount", data.Amount);
-            //ViewBag.Amount = data.Amount;
-
-            //Console.WriteLine(amount);
-
-            //在資料庫新增order
-            ClaimsPrincipal thisUser = this.User;
-            var userId = thisUser.FindFirst(ClaimTypes.NameIdentifier).Value;
-
-            Order thisOrder = new() { OrderId = "O" + DateTime.Now.ToString("yyyyMMddhhmmss"), UserId = userId, Date = DateTime.Now, fReceiver = data.fReceiver, fAddress = data.fAddress, fEmail = data.fEmail, fPhone = data.fPhone };
-            _dbContext.Add(thisOrder);
-            _dbContext.SaveChanges();
-
-            //在資料庫新增orderDetail
-
-            int i = 0;
-            for (i = 0; i < data.ProductIds.Count(); i++)
-            {
-                OrderDetail PforOrderDetail = new() { OrderId = thisOrder.OrderId, ProductId = data.ProductIds[i], Quantity = data.Qtys[i] };
-                _dbContext.Add(PforOrderDetail);
-                _dbContext.SaveChanges();
-            }
-
-            OrderDetailViewModel result = new() { OrderId=thisOrder.OrderId, Amount = data.Amount, fAddress = data.fAddress, fEmail = data.fEmail, fPhone = data.fPhone, fReceiver = data.fReceiver, ProductIds = data.ProductIds, ProductNames = data.ProductNames, ProductPrices = data.ProductPrices, Qtys = data.Qtys };
-
-            //redirect to 訂單詳情
-            return View(result);
-        }
         public IActionResult Cartlist()
         {
             return View();
@@ -136,6 +74,67 @@ namespace pg4_Company.Controllers
             return JsonSerializer.Serialize(result);
         }
 
+        //成立訂單
+        //[Authorize(Roles = "Customer")]
+        [HttpPost]
+        public void ThirdPartyPay([FromForm]OrderCreateViewModel data)
+        {
+            if (!ModelState.IsValid)
+            {
+                var errors = ModelState.Values.SelectMany(v => v.Errors);
+                return;
+            }
+
+            //在資料庫新增order
+            ClaimsPrincipal thisUser = this.User;
+            var userId = thisUser.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+            Order thisOrder = new() {
+                OrderId = "O" + DateTime.Now.ToString("yyyyMMddhhmmss"),
+                UserId = userId, Date = DateTime.Now,
+                fReceiver = data.fReceiver,
+                fAddress = data.fAddress,
+                fEmail = data.fEmail,
+                fPhone = data.fPhone,
+                Amount = int.Parse(data.Amount),
+                IsPaid = false
+            };
+            _dbContext.Add(thisOrder);
+            _dbContext.SaveChanges();
+
+            HttpContext.Session.SetString("OrderId", thisOrder.OrderId);
+            ViewBag.Amount = data.Amount;
+
+            //在資料庫新增orderDetail
+
+            int i = 0;
+            for (i = 0; i < data.ProductIds.Count(); i++)
+            {
+                OrderDetail PforOrderDetail = new() { OrderId = thisOrder.OrderId, ProductId = data.ProductIds[i], Quantity = data.Qtys[i] };
+                _dbContext.Add(PforOrderDetail);
+                _dbContext.SaveChanges();
+            }
+        }
+        
+        public IActionResult OrderDetail()
+        {
+            return View();
+        }
+
+        public string GetOrderDetail()
+        {
+            var orderId = HttpContext.Session.GetString("OrderId");
+            if(orderId == null)
+            {
+                return "error";
+            }
+
+            var query = _dbContext.Order.Where(o => o.OrderId == orderId).Select(o => 
+            new { OrderDetail=(o.OrderDetail.Join(_dbContext.Product, od=>od.ProductId, p=>p.Id, (o, p)=>new { o.ProductId, p.Name, o.Quantity, p.Price})),
+                o.OrderId, o.Amount, o.Date, o.fReceiver, o.fPhone, o.fEmail, o.fAddress});
+            return JsonSerializer.Serialize(query);
+        }
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
@@ -150,8 +149,21 @@ namespace pg4_Company.Controllers
         /// <param name="payType">請款類型</param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<ActionResult> SpgatewayPayBillAsync(int amount, string payType)
+        public async Task<ActionResult> SpgatewayPayBillAsync([FromForm]string PayType)
         {
+            var orderId = HttpContext.Session.GetString("OrderId");
+            var data = _dbContext.Order.Where(o => o.OrderId == orderId).Select(o =>
+            new {
+                OrderDetail = (o.OrderDetail.Join(_dbContext.Product, od => od.ProductId, p => p.Id, (o, p) => new { o.ProductId, p.Name, o.Quantity, p.Price })),
+                o.OrderId,
+                o.Amount,
+                o.Date,
+                o.fReceiver,
+                o.fPhone,
+                o.fEmail,
+                o.fAddress
+            });
+
             string version = "1.5";
 
             // 目前時間轉換 +08:00, 防止傳入時間或Server時間時區不同造成錯誤
@@ -169,11 +181,11 @@ namespace pg4_Company.Controllers
                 Version = version,
                 // * 商店訂單編號
                 //MerchantOrderNo = $"T{DateTime.Now.ToString("yyyyMMddHHmm")}",
-                MerchantOrderNo = $"T{DateTime.Now.ToString("yyyyMMddHHmm")}",
+                MerchantOrderNo = data.First().OrderId,
                 // * 訂單金額
-                Amt = amount,
+                Amt = data.First().Amount,
                 // * 商品資訊
-                ItemDesc = "PAPAGO花藝冬令營",
+                ItemDesc = data.First().OrderDetail.First().Name,
                 // 繳費有效期限(適用於非即時交易)
                 ExpireDate = null,
                 // 支付完成 返回商店網址
@@ -185,7 +197,7 @@ namespace pg4_Company.Controllers
                 // 支付取消 返回商店網址
                 ClientBackURL = null,
                 // * 付款人電子信箱
-                Email = string.Empty,
+                Email = data.First().fEmail,
                 // 付款人電子信箱 是否開放修改(1=可修改 0=不可修改)
                 EmailModify = 0,
                 // 商店備註
@@ -202,27 +214,27 @@ namespace pg4_Company.Controllers
                 BARCODE = null
             };
 
-            if (string.Equals(payType, "CREDIT"))
+            if (string.Equals(PayType, "CREDIT"))
             {
                 tradeInfo.CREDIT = 1;
             }
-            else if (string.Equals(payType, "WEBATM"))
+            else if (string.Equals(PayType, "WEBATM"))
             {
                 tradeInfo.WEBATM = 1;
             }
-            else if (string.Equals(payType, "VACC"))
+            else if (string.Equals(PayType, "VACC"))
             {
                 // 設定繳費截止日期
                 tradeInfo.ExpireDate = taipeiStandardTimeOffset.AddDays(1).ToString("yyyyMMdd");
                 tradeInfo.VACC = 1;
             }
-            else if (string.Equals(payType, "CVS"))
+            else if (string.Equals(PayType, "CVS"))
             {
                 // 設定繳費截止日期
                 tradeInfo.ExpireDate = taipeiStandardTimeOffset.AddDays(1).ToString("yyyyMMdd");
                 tradeInfo.CVS = 1;
             }
-            else if (string.Equals(payType, "BARCODE"))
+            else if (string.Equals(PayType, "BARCODE"))
             {
                 // 設定繳費截止日期
                 tradeInfo.ExpireDate = taipeiStandardTimeOffset.AddDays(1).ToString("yyyyMMdd");

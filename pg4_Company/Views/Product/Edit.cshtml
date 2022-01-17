@@ -2,7 +2,7 @@
 <h1>商品編輯</h1>
 <hr />
 
-<form action="~/Product/EditUpdate" method="post">
+<form action="~/Product/EditUpdate" method="post" enctype="multipart/form-data">
     <div class="container" id="EditTable">
 
         <div class="form-group">
@@ -40,16 +40,21 @@
             <input type="checkbox" name="IsSold" value="true" v-model="products.isSold" />
         </div>
 
+        <div class="form-group">
+            <label for="name" class="form-label title">圖片預覽 :</label>
+            <div v-for="pic in productPics">
+                <img v-bind:src="''+pic.picPath" alt="Alternate Text" height="100" />
+                <button type="button" class="btn btn-danger" v-on:click="delePic(pic.id)">移除</button>
+            </div>
+        </div>
+
+        <div>
+            <label class="form-label">圖片上傳</label>
+            <input class="form-control" type="file" name="Pic" multiple="multiple" />
+        </div>
 
         <button class="btn btn-primary" type="submit">確認修改</button>
         <button class="btn btn-dark" onclick="location.href='/Product/MyProducts'">取消修改</button>
-
-        @*<div>
-                <label class="form-label">課程預覽圖片</label>
-                <input class="form-control" type="file" name="Pic" multiple="multiple" />
-            </div>*@
-
-
     </div>
 
 </form>
@@ -59,18 +64,47 @@
 
 
     var app = new Vue({
+
         el: '#EditTable',
         data: {
-            products: []
-
+            products: [],
+            productPics: []
         },   ///data
 
         mounted: function () {
             var self = this;
-            fetch("/Product/EditSession")
+            fetch("/Product/GetPdSession")
                 .then(function (res) { return res.json() })
                 .then(function (d) { self.products = d[0] })
-        } //mounted
-    })
+
+            fetch("/Product/GetPic")
+                .then(function (res) { return res.json() })
+                .then(function (d) { self.productPics = d })
+
+
+        }, //mounted
+
+        methods: {
+            delePic: function (id) {
+                let self = this;
+                var x = confirm("確認刪除圖片?");
+                if (x != true)
+                    return false;
+                console.log("PicId: " + id);
+                let data = new FormData();
+                data.append("id", id);   //key value
+
+                fetch("DeletePic", {
+                    body: data,
+                    method: "POST",
+                });
+                alert("已刪除圖片");
+                fetch("/Product/GetPic")
+                    .then(function (res) { return res.json() })
+                    .then(function (d) { self.productPics = d })
+            }
+        }//methods
+
+    })//vue
 
 </script>

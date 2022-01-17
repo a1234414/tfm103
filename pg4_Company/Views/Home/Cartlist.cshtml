@@ -214,6 +214,30 @@
                     return false;
 
                 let amount = $("#amount").text();
+                if (amount == 0) {
+                    alert('請勾選欲結帳的商品');
+                    return false;
+                }
+
+                if ($('#fReceiver').val() == '') {
+                    alert('請填寫收件人姓名');
+                    return false;
+                }
+
+                if ($('#fPhone').val() == '') {
+                    alert('請填寫收件人電話');
+                    return false;
+                }
+
+                if ($('#fEmail').val() == '') {
+                    alert('請填寫收件人Email');
+                    return false;
+                }
+
+                if ($('#fAddress').val() == '') {
+                    alert('請填寫收件人地址');
+                    return false;
+                }
 
                 let count = 0;
 

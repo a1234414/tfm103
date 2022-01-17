@@ -28,30 +28,43 @@ namespace pg4_Company.Controllers
             this.env = env;
             this.db = db;
         }
-
-
-
         public IActionResult Index()
         {
             return View();
         }
 
+        
         public IActionResult MyProducts()  //商品管理
         {
             return View("Index");
         }
+        public IActionResult ProductSource()            //api傳回Product值: 已上架
+        {
+            ClaimsPrincipal thisUser = this.User;
+            var userId = thisUser.FindFirst(ClaimTypes.NameIdentifier).Value;
 
+            List<Product> data = db.Product.ToList();
+            var on = data.Where(p => p.IsSold == true && p.CompanyUserId == userId);
+            return Json(on);
+
+
+
+            var query = db.Product.Select(p => new
+            { ProductPic = p.ProductPic.FirstOrDefault(), p.Price, p.Id, p.Name, p.Description_S, p.StartDate, p.EndDate });
+        }
+
+        public IActionResult ProductSourceOff()          //api傳回Product值: 未上架
+        {
+            List<Product> data = db.Product.ToList();
+            var off = data.Where(p => p.IsSold == false);
+            return Json(off);
+        }
         public IActionResult Create()
         {
             return View();
         }
 
-        public IActionResult ProductSource()            //api傳回Product值
-        {
-            List<Product> data = db.Product.ToList();
-            return Json(data);
-        }
-
+        //新增商品, 圖片上傳
         [HttpPost]
         public IActionResult Upload(CreateProductViewModel data)
         {
@@ -106,13 +119,13 @@ namespace pg4_Company.Controllers
         }
 
         [HttpPost]
-        public IActionResult EditSource([FromForm] int id)    //商品管理按下編輯 傳回該ProductId 並存到Session
+        public IActionResult SetPdSession([FromForm] int id)    //商品管理按下編輯 傳回該ProductId 並存到Session
         {
             HttpContext.Session.SetInt32("ProductId", id);      //(key , value)
             return Json(id);
             //  return View("Edit", id) ;
         }
-        public IActionResult EditSession()                                   //API      Get Session的ProductId傳出去
+        public IActionResult GetPdSession()                                   //API      Get Session的ProductId傳出去
         {
             List<Product> pd = db.Product.ToList();
             var id = HttpContext.Session.GetInt32("ProductId");
@@ -120,8 +133,33 @@ namespace pg4_Company.Controllers
             return Json(data);
         }
 
+        public IActionResult GetPic()
+        {
+            List<ProductPic> pic = db.ProductPic.ToList();
+            var id = HttpContext.Session.GetInt32("ProductId");
+
+            var data = (pic.Where(pic => pic.ProductId == id));
+            return Json(data);
+        }
+
+        [HttpPost]
+        public IActionResult DeletePic([FromForm] int id)
+        {
+            List<ProductPic> pic = db.ProductPic.ToList();
+            var pp = pic.FirstOrDefault(p => p.Id == id);
+            db.ProductPic.Remove(pp);
+            db.SaveChanges();
+            return Json(pp);
+        }
+
         public IActionResult EditUpdate(EditProductViewModel data)  //
         {
+            if (!ModelState.IsValid)
+            {
+                var errors = ModelState.Values.SelectMany(v => v.Errors);
+                return Ok($"發生錯誤: {errors}");
+            }
+
             var id = HttpContext.Session.GetInt32("ProductId");
             var PdBd = db.Product.FirstOrDefault(x => x.Id == id);
 
@@ -135,6 +173,27 @@ namespace pg4_Company.Controllers
                 PdBd.EndDate = data.EndDate;
                 PdBd.IsSold = data.IsSold;
 
+                var basePath = $@"{env.WebRootPath}";
+
+                if (data.Pic != null)  //有傳圖片
+                {
+                    foreach (var f in data.Pic)
+                    {
+                        var combinFileName = $@"{fileroot}{id}_{f.FileName}"; //宣告每次檔案路徑+名稱
+                        using (var fileSteam = System.IO.File.Create($@"{basePath}{combinFileName}"))
+                        {
+                            f.CopyTo(fileSteam);
+                        }
+
+                        db.ProductPic.Add(new ProductPic
+                        {
+                            ProductId = PdBd.Id,
+                            PicPath = $"/pic/product/{id}_{f.FileName}"
+                        });
+                        db.SaveChanges();
+                    }
+                }
+
                 db.SaveChanges();
             }
 
@@ -145,44 +204,26 @@ namespace pg4_Company.Controllers
         {
             return View();
         }
-
-
-        /// ///////////////////////////////////////////////////////////////////////////////////////
-        public IActionResult GetEdit()
-        {
-            var editList = HttpContext.Session.GetString("ProductId");
-            List<Product> pd = db.Product.ToList();
-            if (string.IsNullOrEmpty(editList))
-            {
-                return Json(editList);
-            }
-            var data = JsonSerializer.Deserialize<List<int>>(editList);
-            return Json(pd.Where(x => data.Contains(x.Id)).ToList());                         //Contains (xx)  List包含xx的資料
-        }
-
-
-
-
-
         [HttpPost]
-        public bool EditProduct([FromForm] int id)    //[FromForm] 透過 HTTP POST 的 form 取值
+        public IActionResult DeletePd([FromForm] int id)
         {
-            var editList = HttpContext.Session.GetString("ProductId");
-            if (string.IsNullOrEmpty(editList))
-            {
-                var data = new List<int>();
-                data.Add(id);
-                var json = JsonSerializer.Serialize(data);
-                HttpContext.Session.SetString("ProductId", json);    //(key , value)
-            }
-            else
-            {
-                var data = JsonSerializer.Deserialize<List<int>>(editList);
-                data.Add(id);
-                var json = JsonSerializer.Serialize(data);
-                HttpContext.Session.SetString("ProductId", json); //(key , value)
-            }
-            return true;
+            List<Product> pd = db.Product.ToList();
+            var p = pd.FirstOrDefault(p => p.Id == id);
+
+            p.IsSold = false;
+            db.SaveChanges();
+
+            return Ok();
+        }
+        public IActionResult OnPd(int id)
+        {
+            List<Product> pd = db.Product.ToList();
+            var p = pd.FirstOrDefault(p => p.Id == id);
+
+            p.IsSold = true;
+            db.SaveChanges();
+
+            return Ok();
         }
     }
 }

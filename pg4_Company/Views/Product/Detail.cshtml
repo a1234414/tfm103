@@ -17,8 +17,6 @@
     }
 </style>
 
-
-
 <H1>課程詳細資訊</H1>
 
 <hr />
@@ -26,43 +24,43 @@
 <div class="container" id="DetailTable">
 
     <div class="form-group">
-        <label for="name" class="form-label title">課程名稱 :</label>
+        <label for="name" class="form-label title">課程名稱: </label>
         <label for="name" class="form-label com">{{products.name}}</label>
     </div>
 
     <div class="form-group">
-        <label for="name" class="form-label title">課程定價 :</label>
+        <label for="name" class="form-label title">課程定價: </label>
         <label for="name" class="form-label com">{{products.price}}</label>
         <label for="name" class="form-label com"> $</label>
     </div>
 
     <div class="form-group">
-        <label for="name" class="form-label title">課程簡述 :</label>
+        <label for="name" class="form-label title">課程簡述: </label>
         <label for="name" class="form-label com">{{products.description_S}}</label>
     </div>
 
     <div class="form-group">
-        <label for="name" class="form-label title">課程詳述 :</label>
+        <label for="name" class="form-label title">課程詳述: </label>
         <div><label for="name" class="form-label com">{{products.description_L}}</label></div>
     </div>
 
     <div class="form-group">
-        <label class="col-form-label title">活動開始日期</label>
+        <label class="col-form-label title">活動開始時間: </label>
         <label for="name" class="form-label com">{{products.startDate}}</label>
     </div>
 
     <div class="form-group">
-        <label class="col-form-label title">活動結束日期</label>
+        <label class="col-form-label title">活動結束時間: </label>
         <label for="name" class="form-label com">{{products.endDate}}</label>
     </div>
 
     <div class="form-group">
-        <label for="name" class="form-label title">上架狀態 :</label>
+        <label for="name" class="form-label title">上架中: </label>
         <label for="name" class="form-label com">{{products.isSold}}</label>
     </div>
 
     <div class="form-group">
-        <label for="name" class="form-label title">課程預覽 :</label>
+        <label for="name" class="form-label title">圖片: </label>
         <div v-for="pic in productPics">
             <img v-bind:src="''+pic.picPath" alt="Alternate Text" height="100" />
         </div>
@@ -72,14 +70,7 @@
     <button class="btn btn-primary" onclick="location.href='/Product/Edit'">修改課程</button>
 </div>
 
-
-
-
-
-
 <script>
-
-
         var app = new Vue({
             el: '#DetailTable',
             data: {
@@ -98,5 +89,4 @@
                     .then(function (d) { self.productPics = d })
             } //mounted
         })
-
 </script>

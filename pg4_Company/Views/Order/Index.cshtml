@@ -1,21 +1,9 @@
 ﻿<div id="orderPanel">
-    @*to do: 互動式查詢*@
-    <div class="input-group mb-3">
-        <span class="input-group-text">起始時間</span>
-        <input type="date" id="StartDate" />
-        <span class="input-group-text">結束時間</span>
-        <input type="date" id="EndDate" />
-        <span class="input-group-text">名稱包含</span>
-        <input type="text" id="NameContain" />
-        <span class="input-group-text" v-on:click="Search">查詢</span>
-        <span class="input-group-text">總收入： {{Income}}</span>
-    </div>
-    <hr />
     <div>
         <table class="table">
             <tr class="table-primary">
                 <td class="col-md-1">訂單編號</td>
-                <td class="col-md-2">成立日期</td>
+                <td class="col-md-2">成立時間</td>
                 <td class="col-md-2">商品名稱</td>
                 <td class="col-md-1">售價</td>
                 <td class="col-md-1">銷售數量</td>
@@ -42,14 +30,6 @@
             myOrders: [],
             Income: 0,
         },
-        methods: {
-            Search: function () {
-                var StartDate = $('#StartDate').val().toString();
-                var EndDate = $('#StartDate').val().toString();
-                var NameContain = $('#NameContain').val();
-
-            }
-        },
         mounted: function() {
                 let self = this;
                 fetch('/Order/MyOrders').then(function (res) { return res.json() })
@@ -60,9 +40,3 @@
             }
     });
 </script>
-
-<div>
-    <form action="~/Order/Init">
-        <button type="submit">資料生成</button>
-    </form>
-</div>

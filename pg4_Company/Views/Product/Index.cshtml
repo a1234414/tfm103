@@ -1,19 +1,21 @@
 ﻿<h1>我的商品</h1>
 
 
-<h2 style="text-align:right;"><a href="/Product/Create">新增商品</a></h2>
+@*<h2 style="text-align:right;"><a href="/Product/Create">新增商品</a></h2>*@
 
 <div class="container-fluid" id="ProductTable">
+    <div></div>
     <button class="btn btn-primary" v-on:click="toggle">切換 上/下架商品</button>
+    <button class="btn btn-primary" onclick="location.href='/Product/Create'">新增商品</button>
     <table class="table">
         <thead>
             <tr>
-                <th scope="col">編號</th>
-                <th scope="col">商品圖</th>
+                <th scope="col" width="60">編號</th>
+                <th scope="col" width="150">商品圖</th>
                 <th scope="col">商品名稱</th>
                 <th scope="col">價格</th>
-                <th scope="col">開始日期</th>
-                <th scope="col">結束日期</th>
+                <th scope="col">開始時間</th>
+                <th scope="col">結束時間</th>
                 <th scope="col">上架狀態</th>
                 <th scope="col">編輯</th>
                 <th scope="col">明細</th>
@@ -25,7 +27,7 @@
             <!---上架商品檢視--->
             <tr v-for="pd in producton" v-if="isShow">
                 <td>{{pd.id}}</td>    <!---開頭小寫--->
-                <td><img v-bind:src="''+pd.productPic.picPath" alt="No Img" height="100"/></td>
+                <td><img v-bind:src="''+pd.productPic.picPath" alt="No Img"  width="150"/></td>
                 <td>{{pd.name}}</td>
                 <td>{{pd.price}}</td>
                 <td>{{pd.startDate}}</td>
@@ -39,7 +41,7 @@
             <!---下架商品檢視--->
             <tr v-for="pd in productoff" v-if="!isShow">
                 <td>{{pd.id}}</td>
-                <td><img v-bind:src="''+pd.productPic.picPath" alt="No Img" height="100" /></td>
+                <td><img v-bind:src="''+pd.productPic.picPath" alt="No Img"  width="150" /></td>
                 <td>{{pd.name}}</td>
                 <td>{{pd.price}}</td>
                 <td>{{pd.startDate}}</td>
@@ -49,10 +51,7 @@
                 <td><button class="btn btn-primary" v-on:click="editPd(pd.id)" onclick="location.href='/Product/Detail'">Detail </button></td>
                 <td><button class="btn btn-success" v-on:click="onPd(pd.id)">上架</button></td>
             </tr>
-
         </tbody>
-
-
     </table>
 </div>
 
@@ -78,8 +77,6 @@
             fetch("/Product/ProductSourceOff")
                 .then(function (res) { return res.json() })
                 .then(function (d) { self.productoff = d })
-
-
         }, //mounted
 
         methods: {
@@ -111,7 +108,6 @@
                 fetch("/Product/ProductSource")
                     .then(function (res) { return res.json() })
                     .then(function (d) { self.producton = d })
-
             },
             onPd: function (id) {
                 let self = this;

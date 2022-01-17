@@ -38,14 +38,14 @@ namespace Project_TFM10304.Controllers
             _dbContext = dbContext;
         }
 
-        //註冊頁
+        //註冊為商家 頁面
         [ViewLayout("_Layout")]
         public IActionResult Index()
         {
             return View();
         }
 
-        //Company user register api
+        //接收Index的表單, 新增至資料庫(Users, Company, Roles)
         [HttpPost]
         public async Task<IActionResult> Register(cuCreateViewModel data)
         {
@@ -55,7 +55,9 @@ namespace Project_TFM10304.Controllers
                 return Ok($"發生錯誤: {errors}");
             }
             var user = new Users { UserName = data.Email, Email = data.Email };
+            //新增至Users
             var result = await _userManager.CreateAsync(user, data.Password);
+            //新增至Company
             if (result.Succeeded)
             {
                 Company c = new Company
@@ -74,6 +76,7 @@ namespace Project_TFM10304.Controllers
                 _dbContext.Company.Add(c);
                 _dbContext.SaveChanges();
 
+                //設定role
                 if (!await _roleManager.RoleExistsAsync("Company"))
                 {
                     await _roleManager.CreateAsync(new IdentityRole("Company"));
@@ -86,9 +89,11 @@ namespace Project_TFM10304.Controllers
             {
                 ModelState.AddModelError(string.Empty, error.Description);
             }
+            //重新導向
             return RedirectToAction("Index", "CompanyUser", null);
         }
 
+        //Company User資料編輯頁
         [Authorize(Roles = "Company")]
         [ViewLayout("_CompanyLayout")]
         public IActionResult Manage()
@@ -96,7 +101,7 @@ namespace Project_TFM10304.Controllers
             return View();
         }
 
-        //取得商家資料 for manage view
+        //取得Manage 初始資料(目前登入user的資料)
         [Authorize(Roles = "Company")]
         public string GetManageDefaultValues()
         {
@@ -121,7 +126,7 @@ namespace Project_TFM10304.Controllers
             return jsonResult;
         }
 
-        //更新商家資料 company table
+        //接收Manage送出的表單, 更改資料庫內容
         [Authorize(Roles = "Company")]
         public IActionResult Update(cuUpdateViewModel data)
         {

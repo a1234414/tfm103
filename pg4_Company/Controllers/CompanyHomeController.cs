@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 
 namespace Project_TFM10304.Controllers
 {
-    //toB 端的權限 & layout設定
+    //權限 & layout設定
     [ViewLayout("_CompanyLayout")]
     [Authorize(Roles = "Company")]
     public class CompanyHomeController : Controller
@@ -40,6 +40,7 @@ namespace Project_TFM10304.Controllers
             return View();
         }
 
+        //CompanyHome/Index 初始資料-1
         public string ComingOrders(int comingDays)
         {
             ClaimsPrincipal thisUser = this.User;
@@ -57,19 +58,13 @@ namespace Project_TFM10304.Controllers
                     .GroupBy(o => new { o.productName, o.date, o.price })
                     .Select(g => new {productName = g.Key.productName, date = g.Key.date.ToString("yyyy/MM/dd"), quantity = g.Sum(q => q.quantity), totalPrice = (g.Key.price * g.Sum(q=>q.quantity))});
 
-                //to do: datetime格式整理
-                //foreach (var item in ordersGroups)
-                //{
-                //    DateTime dt = item.date;
-                //    item.date = dt.ToString("yyyyMMdd");
-                //}
-
                 var jsonResult = JsonSerializer.Serialize(ordersGroups);
                 return jsonResult;
             }
             return "";
         }
 
+        //CompanyHome/Index 初始資料-2
         public string PassedOrders(int passedDays)
         {
             ClaimsPrincipal thisUser = this.User;
@@ -92,11 +87,6 @@ namespace Project_TFM10304.Controllers
                 return jsonResult;
             }
             return "";
-        }
-
-        public IActionResult ComingOrdersPV()
-        {
-            return PartialView("_GetHomeTable");
         }
 
         public IActionResult Privacy()

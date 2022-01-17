@@ -43,6 +43,7 @@ namespace pg4_Company.Controllers
             };
         }
 
+        //首頁
         public IActionResult Index()
         {
             return View();
@@ -53,12 +54,13 @@ namespace pg4_Company.Controllers
             return View();
         }
 
+        //購物車清單
         public IActionResult Cartlist()
         {
             return View();
         }
 
-        //called when Cartlist.cshtml vue mounted
+        //取得購物車清單 商品詳細資料
         public string CartlistContent()
         {
             //向 Session 取得商品列表
@@ -74,7 +76,7 @@ namespace pg4_Company.Controllers
             return JsonSerializer.Serialize(result);
         }
 
-        //成立訂單
+        //從Cartlist 成立訂單
         //[Authorize(Roles = "Customer")]
         [HttpPost]
         public void ThirdPartyPay([FromForm]OrderCreateViewModel data)
@@ -116,11 +118,13 @@ namespace pg4_Company.Controllers
             }
         }
         
+        //成立訂單後, 顯示訂單詳情
         public IActionResult OrderDetail()
         {
             return View();
         }
 
+        //訂單詳情初始資料
         public string GetOrderDetail()
         {
             var orderId = HttpContext.Session.GetString("OrderId");
@@ -141,13 +145,7 @@ namespace pg4_Company.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
         
-        /// <summary>
-        /// [智付通支付]金流介接
-        /// </summary>
-        /// <param name="ordernumber">訂單單號</param>
-        /// <param name="amount">訂單金額</param>
-        /// <param name="payType">請款類型</param>
-        /// <returns></returns>
+        //訂單詳情結帳, 呼叫藍新金流
         [HttpPost]
         public async Task<ActionResult> SpgatewayPayBillAsync([FromForm]string PayType)
         {
@@ -240,11 +238,6 @@ namespace pg4_Company.Controllers
                 tradeInfo.ExpireDate = taipeiStandardTimeOffset.AddDays(1).ToString("yyyyMMdd");
                 tradeInfo.BARCODE = 1;
             }
-
-            //Atom<string> result = new Atom<string>()
-            //{
-            //    IsSuccess = true
-            //};
 
             var inputModel = new SpgatewayInputModel
             {

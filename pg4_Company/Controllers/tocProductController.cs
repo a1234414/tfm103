@@ -19,39 +19,22 @@ namespace pg4_Company.Controllers
             _dbContext = dbcontext;
         }
 
+        //商品列表頁面
         public IActionResult Index()
         {
             return View();
         }
 
-        //to do: bug修復, 放圖片
-        public string Generate()
-        {
-            ClaimsPrincipal thisUser = this.User;
-            var userId = thisUser.FindFirst(ClaimTypes.NameIdentifier).Value;
-
-            if(userId != null)
-            {
-                Product p1 = new() { CompanyUserId = userId, Name = "商品名稱", Price = 1000, Description_S = "簡介", Description_L = "詳介", StartDate=DateTime.Now, EndDate=DateTime.Now, TotalStock=10, StockForSale=10 };
-                Product p2 = new() { CompanyUserId = userId, Name = "商品名稱", Price = 1000, Description_S = "簡介", Description_L = "詳介", StartDate = DateTime.Now, EndDate = DateTime.Now, TotalStock = 10, StockForSale = 10 };
-                Product p3 = new() { CompanyUserId = userId, Name = "商品名稱", Price = 1000, Description_S = "簡介", Description_L = "詳介", StartDate = DateTime.Now, EndDate = DateTime.Now, TotalStock = 10, StockForSale = 10 };
-
-                _dbContext.Product.AddRange(p1, p2, p3);
-                _dbContext.SaveChanges();
-            }
-
-            var query = _dbContext.Product.Select(p => p);
-            return JsonSerializer.Serialize(query);
-        }
-
+        //取得已上架商品列表
         public string GetProducts()
         {
-            var query = _dbContext.Product.Select(p => new 
+            var query = _dbContext.Product.Where(p=>p.IsSold == true).Select(p => new 
             { ProductPic = p.ProductPic.FirstOrDefault(), p.Price, p.Id, p.Name, p.Description_S, p.StartDate, p.EndDate });
 
             return JsonSerializer.Serialize(query);
         }
 
+        //抓取存在Session中購物車的ProductId, 搜尋商品訊息
         public List<Product> GetCart()
         {
             var cartList = HttpContext.Session.GetString("Cart");
@@ -86,6 +69,8 @@ namespace pg4_Company.Controllers
             }
             return "已加入購物車";
         }
+
+        //自購物車中移除
         [HttpPost]
         public string RemoveItem([FromForm] int id)
         {

@@ -66,7 +66,9 @@ namespace pg4_Company.Controllers
         }
         public IActionResult Create()
         {
+     
             return View();
+
         }
 
         //新增商品, 圖片上傳

@@ -99,28 +99,11 @@ namespace Project_TFM10304.Areas.Identity.Pages.Account
                     await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
                         $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 
-                    //同時新增Company資料
-                    //Company c = new Company
-                    //{
-                    //    UserId = user.Id,
-                    //    TaxId = int.Parse(Input.TaxId),
-                    //    CompanyName = Input.CompanyName,
-                    //    LegalName = Input.LegalName,
-                    //    Nation = Input.Nation,
-                    //    City = Input.City,
-                    //    PostalCode = Input.PostalCode,
-                    //    Address = Input.Address,
-                    //    ContactNumber = Input.ContactNumber
-                    //};
-                    //_dbContext.Company.Add(c);
-                    //_dbContext.SaveChanges();
-
-                    //給予新註冊的user Role = Company
-                    //if (! await _roleManager.RoleExistsAsync("Company"))
-                    //{
-                    //    await _roleManager.CreateAsync(new IdentityRole("Company"));
-                    //}
-                    //await _userManager.AddToRoleAsync(user, "Company");
+                    if (!await _roleManager.RoleExistsAsync("Customer"))
+                    {
+                        await _roleManager.CreateAsync(new IdentityRole("Customer"));
+                    }
+                    await _userManager.AddToRoleAsync(user, "Customer");
 
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
                     {

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Project_TFM10304.Models;
 using System;
@@ -17,6 +18,8 @@ namespace Project_TFM10304.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Entity<OrderDetail>().HasKey(od => new { od.OrderId, od.ProductId });
+            builder.Entity<IdentityUser>().ToTable("Users");
+            builder.Entity<IdentityRole>().ToTable("Roles");
 
             base.OnModelCreating(builder);
         }

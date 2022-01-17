@@ -77,7 +77,7 @@ namespace pg4_Company.Controllers
         }
 
         //從Cartlist 成立訂單
-        //[Authorize(Roles = "Customer")]
+        [Authorize(Roles = "Customer")]
         [HttpPost]
         public void ThirdPartyPay([FromForm]OrderCreateViewModel data)
         {

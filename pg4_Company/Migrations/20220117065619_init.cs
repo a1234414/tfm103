@@ -238,8 +238,7 @@ namespace pg4_Company.Migrations
                 {
                     OrderId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     ProductId = table.Column<int>(type: "int", nullable: false),
-                    Quantity = table.Column<int>(type: "int", nullable: false),
-                    IsPaid = table.Column<bool>(type: "bit", nullable: false)
+                    Quantity = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {

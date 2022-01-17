@@ -10,7 +10,7 @@ using Project_TFM10304.Data;
 namespace pg4_Company.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220115133816_init")]
+    [Migration("20220117065619_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -304,9 +304,6 @@ namespace pg4_Company.Migrations
 
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
-
-                    b.Property<bool>("IsPaid")
-                        .HasColumnType("bit");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");

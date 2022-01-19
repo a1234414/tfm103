@@ -18,8 +18,6 @@ namespace Project_TFM10304.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Entity<OrderDetail>().HasKey(od => new { od.OrderId, od.ProductId });
-            builder.Entity<IdentityUser>().ToTable("Users");
-            builder.Entity<IdentityRole>().ToTable("Roles");
 
             base.OnModelCreating(builder);
         }

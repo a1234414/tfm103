@@ -97,6 +97,7 @@
                     .then(function (res) { return res.json() })
                     .then(function (o) {
                         self.comingOrders = o;
+                        self.comingIncome = 0;
                         o.forEach(op => self.comingIncome += op.totalPrice);
                     });
                 let passedDays = self.passedDays;
@@ -104,6 +105,7 @@
                     .then(function (res) { return res.json() })
                     .then(function (o) {
                         self.passedOrders = o;
+                        self.passedIncome = 0;
                         o.forEach(op => self.passedIncome += op.totalPrice);
                     });
             }

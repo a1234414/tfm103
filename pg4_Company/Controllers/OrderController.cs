@@ -63,7 +63,7 @@ namespace Project_TFM10304.Controllers
                         pedate = p.EndDate,
                         cid = p.CompanyUserId
                     })
-                    .Where(o => o.cid == userId).Select(r =>
+                    .Where(o => o.cid == userId && o.pedate <= DateTime.Now).Select(r =>
                     new {
                         oid = r.oid,
                         productName = r.productName,
@@ -94,6 +94,46 @@ namespace Project_TFM10304.Controllers
                 .Select(r => new { oid = r.oid, productName = r.productName, price = r.price, quantity = r.quantity, psdate = r.psdate.ToString("yyyy/MM/dd"), pedate = r.pedate.ToString("yyyy/MM/dd"), totalPrice = r.price * r.quantity });
 
             return JsonSerializer.Serialize(query);
+        }
+
+        //初始化Demo用的資料
+        public void DemoInit()
+        {
+            ClaimsPrincipal thisUser = this.User;
+            string userId = thisUser.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+            Product p1 = new() { CompanyUserId = userId, Name = "第一期 | 金工體驗初階班", Price = 1000, StartDate = DateTime.Parse("2022-01-09").AddHours(13).AddMinutes(30), EndDate = DateTime.Parse("2022-01-09").AddHours(15).AddMinutes(30) };
+            Product p2 = new() { CompanyUserId = userId, Name = "第二期 | 金工體驗初階班", Price = 1000, StartDate = DateTime.Parse("2022-01-16").AddHours(13).AddMinutes(30), EndDate = DateTime.Parse("2022-01-16").AddHours(15).AddMinutes(30) };
+            Product p3 = new() { CompanyUserId = userId, Name = "第三期 | 金工體驗初階班", Price = 1000, StartDate = DateTime.Parse("2022-01-23").AddHours(13).AddMinutes(30), EndDate = DateTime.Parse("2022-01-23").AddHours(15).AddMinutes(30) };
+            Product p4 = new() { CompanyUserId = userId, Name = "第一期 | 金工進階探索班", Price = 2999, StartDate = DateTime.Parse("2022-01-22").AddHours(13).AddMinutes(30), EndDate = DateTime.Parse("2022-01-22").AddHours(18).AddMinutes(30) };
+
+            _dbContext.Product.AddRange(p1, p2, p3, p4);
+            _dbContext.SaveChanges();
+
+            Order o1 = new() { OrderId = "O20220105001", UserId = userId };
+            Order o2 = new() { OrderId = "O20220105002", UserId = userId };
+
+            Order o3 = new() { OrderId = "O20220113001", UserId = userId };
+            Order o4 = new() { OrderId = "O20220114001", UserId = userId };
+
+            Order o5 = new() { OrderId = "O20220120001", UserId = userId };
+            Order o6 = new() { OrderId = "O20220121001", UserId = userId };
+
+            _dbContext.Order.AddRange(o1, o2, o3, o4, o5, o6);
+            _dbContext.SaveChanges();
+
+            //p6: 9筆總售出
+            OrderDetail od1 = new() { OrderId = "O20220105001", ProductId = p1.Id, Quantity = 4 };
+            OrderDetail od2 = new() { OrderId = "O20220105002", ProductId = p1.Id, Quantity = 5 };
+
+            OrderDetail od3 = new() { OrderId = "O20220113001", ProductId = p2.Id, Quantity = 6 };
+            OrderDetail od4 = new() { OrderId = "O20220114001", ProductId = p2.Id, Quantity = 6 };
+
+            OrderDetail od5 = new() { OrderId = "O20220120001", ProductId = p3.Id, Quantity = 6 };
+            OrderDetail od6 = new() { OrderId = "O20220114001", ProductId = p4.Id, Quantity = 6 };
+
+            _dbContext.AddRange(od1, od2, od3, od4, od5, od6);
+            _dbContext.SaveChanges();
         }
     }
 }

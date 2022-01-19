@@ -4,7 +4,7 @@
         <input type="date" class="form-control" id="sdate">
         <span class="input-group-text">結束日期</span>
         <input type="date" class="form-control" id="edate">
-        <span class="input-group-text">查詢</span>
+        <span class="input-group-text" v-on:click="GetOrders">查詢</span>
         <span class="input-group-text">預計總收入： {{Income}}</span>
     </div>
     <div>
@@ -27,6 +27,9 @@
             </tr>
         </table>
     </div>
+    @*<div>
+        <button v-on:click="GetInit">初始資料</button>
+    </div>*@
 </div>
 
 <script>
@@ -50,12 +53,16 @@
                 let sdate = $('#sdate').val();
                 let edate = $('#edate').val();
 
-                fetch('/Order/GetOrders' + '?sdate=' + sdate + '&?edate=' + edate).then(function (res) { return res.json() })
+                fetch('/Order/GetOrders/' + '?sdate=' + sdate + '&edate=' + edate).then(function (res) { return res.json() })
                     .then(function (o) {
                         self.myOrders = o;
                         self.Income = 0;
                         o.forEach(op => self.Income += op.totalPrice);
                     });
+            },
+            //初始化Demo資料
+            GetInit: function () {
+                fetch('/Order/DemoInit').then(function () { app.GetOrders() });
             }
         }
     });

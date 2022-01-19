@@ -86,7 +86,7 @@
                     </td>
                     <td>
                         <span id="price"></span>
-                        <span class="price amountClass" v-bind:id="'price_' + i"> {{p.Price}} </span>
+                        <span class="price amountClass" v-bind:id="'price_' + i"> {{slicePrice(p.Price)}} </span>
                     </td>
                     @*to do: 數量加總, 小計, 總計*@
                     <td>
@@ -183,6 +183,30 @@
                 .then(function (r) { self.cart = r }).then(function () { self.countSubTotal() });
         },
         methods: {
+            slicePrice: function (UPrice) {
+                var num = 0;
+                var tempPrice = 0;
+                var temp = [];
+                var truePrice;
+                if (UPrice.toString().length % 3 != 0) {
+                    num = parseInt(UPrice.toString().length / 3);
+                } else {
+                    num = parseInt(UPrice.toString().length) / 3 - 1;
+                }
+                tempPrice = UPrice;
+                for (var i = num; i > 0; i--) {
+                    if (tempPrice.toString().length > 3) {
+                        temp[i] = tempPrice.toString().slice(-3);
+                    }
+                    tempPrice = tempPrice.toString().substring(0, tempPrice.toString().length - 3);
+                    temp[0] = tempPrice;
+                }
+                truePrice = temp[0];
+                for (var j = 1; j < num + 1; j++) {
+                    truePrice += ("," + temp[j]);
+                }
+                return truePrice;
+            },
             del: function (id) {
                 console.log("e");
                 var x = confirm("是否確定刪除此商品?");

@@ -12,24 +12,11 @@
     </div>
     <div id="space" style="height: 20px;"></div>
 
-    @*卡片式商品清單*@
-    <div v-for="p in products">
-        <div class="card" style="width: 25%;">
-            <img class="card-img-top" v-bind:src="''+p.ProductPic.PicPath" alt="Card image cap">
-            <div class="card-body">
-                <h5 class="card-title">{{p.Name}}</h5>
-                <a href="#" v-on:click="addToCart(p.Id)" class="btn btn-primary">加入購物車</a>
-                <p class="card-text">$ {{p.Price}}</p>
-            </div>
-        </div>
-    </div>
-
     <div id="main">
         <div id="item">
-            <a href="#"
-               class="icons">
-                <img src="~/pic/course/1.jfif">
-                <p>桌球課程</p>
+            <a id="Selection" class="icons" href="#" v-on:click="ReturnProductPage('台北')">
+            <img  src="https://deih43ym53wif.cloudfront.net/taipei-taiwan-shutterstock_666463504_3837e958f1.jpeg" />
+            <p>台北</p>
             </a>
             <a href="#" class="icons color-a">
                 <img src="~/pic/course/2.jfif" />
@@ -261,30 +248,26 @@
     </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6.14"></script>
 <script>
-    var app = new Vue({
-        el: '#homePanel',
-        data: {
-            products: []
-        },
+    //=====================VUE========================//CHUN
+
+    var SearchAll = new Vue({
+        el: '#Selection',
         methods: {
-            addToCart: function (id) {
+            ReturnProductPage: function (Location) {
                 let data = new FormData();
-                data.append("id", id);
-                fetch("/tocProduct/AddProductToCart", {
+                data.append("Location", Location);
+                fetch("/Product/Product/SelectProductCatogory", {
                     body: data, // must match 'Content-Type' header
                     method: 'POST', // *GET, POST, PUT, DELETE, etc.
                 }).then(response => response.text())
                     .then(function (d) {
-                        vcart.GetCartProduct();
-                        alert(d);
+                        window.location.href = "/Product/Product/SearchIndex"
                     });
             }
         },
-        mounted: function () {
-            let self = this;
-            fetch('/tocProduct/GetProducts').then(function (r) { return r.json() })
-                .then(function (r) { self.products = r });
-        }
     });
+     //=====================VUE========================//CHUN
+
 </script>

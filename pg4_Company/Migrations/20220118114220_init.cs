@@ -217,7 +217,13 @@ namespace pg4_Company.Migrations
                     Price = table.Column<int>(type: "int", nullable: false),
                     Description_S = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Description_L = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Description_L_1 = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Description_L_2 = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Description_L_3 = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Description_L_4 = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Description_L_5 = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Type = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Location = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     EndDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },

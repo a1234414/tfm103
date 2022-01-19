@@ -109,8 +109,15 @@ namespace pg4_Company.Controllers
             p.CompanyUserId = userId;
             p.Name = data.Name;
             p.Price = data.Price;
+            p.Type = data.Type;
+            p.Location = data.Location;
             p.Description_S = data.Description_S;
             p.Description_L = data.Description_L;
+            p.Description_L_1 = data.Description_L_1;
+            p.Description_L_2 = data.Description_L_2;
+            p.Description_L_3 = data.Description_L_3;
+            p.Description_L_4 = data.Description_L_4;
+            p.Description_L_5 = data.Description_L_5;
             p.StartDate = data.StartDate;
             p.EndDate = data.EndDate;
             p.IsSold = data.IsSold;
@@ -201,8 +208,14 @@ namespace pg4_Company.Controllers
             {
                 PdBd.Name = data.Name;
                 PdBd.Price = data.Price;
+                PdBd.Type = data.Type;
                 PdBd.Description_S = data.Description_S;
                 PdBd.Description_L = data.Description_L;
+                PdBd.Description_L_1 = data.Description_L_1;
+                PdBd.Description_L_2 = data.Description_L_2;
+                PdBd.Description_L_3 = data.Description_L_3;
+                PdBd.Description_L_4 = data.Description_L_4;
+                PdBd.Description_L_5 = data.Description_L_5;
                 PdBd.StartDate = data.StartDate;
                 PdBd.EndDate = data.EndDate;
                 PdBd.IsSold = data.IsSold;

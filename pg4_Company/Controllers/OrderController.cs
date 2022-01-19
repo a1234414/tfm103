@@ -49,7 +49,6 @@ namespace Project_TFM10304.Controllers
                     new
                     {
                         id = o.OrderId,
-                        odate = o.Date,
                         productId = od.ProductId,
                         quantity = od.Quantity,
                     })
@@ -57,7 +56,6 @@ namespace Project_TFM10304.Controllers
                     new
                     {
                         oid = od.id,
-                        odate = od.odate,
                         productName = p.Name,
                         price = p.Price,
                         quantity = od.quantity,
@@ -68,12 +66,11 @@ namespace Project_TFM10304.Controllers
                     .Where(o => o.cid == userId).Select(r =>
                     new {
                         oid = r.oid,
-                        odate = r.odate,
                         productName = r.productName,
                         price = r.price,
                         quantity = r.quantity,
-                        psdate = r.psdate.ToString("yyyyMMdd"),
-                        pedate = r.pedate.ToString("yyyyMMdd"),
+                        psdate = r.psdate.ToString("yyyy/MM/dd"),
+                        pedate = r.pedate.ToString("yyyy/MM/dd"),
                         totalPrice = r.price * r.quantity
                     });
 
@@ -81,6 +78,22 @@ namespace Project_TFM10304.Controllers
                 return jsonResult;
             }
             return "";
+        }
+
+        public string GetOrders(string sdate, string edate)
+        {
+            ClaimsPrincipal thisUser = this.User;
+            string userId = thisUser.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+            DateTime dts = (sdate == null) ? DateTime.Parse("2000-01-01") : DateTime.Parse(sdate);
+            DateTime dte = (edate == null) ? DateTime.Now : DateTime.Parse(edate);
+
+            var query = _dbContext.Order.Join(_dbContext.OrderDetail, o => o.OrderId, od => od.OrderId, (o, od) => new { id = o.OrderId, pid = od.ProductId, qty = od.Quantity })
+                .Join(_dbContext.Product, o => o.pid, p => p.Id, (o, p) => new { cid = p.CompanyUserId, oid = o.id, productName = p.Name, price = p.Price, quantity = o.qty, psdate = p.StartDate, pedate = p.EndDate })
+                .Where(o => o.cid == userId && o.psdate >= dts && o.pedate <= dte)
+                .Select(r => new { oid = r.oid, productName = r.productName, price = r.price, quantity = r.quantity, psdate = r.psdate.ToString("yyyy/MM/dd"), pedate = r.pedate.ToString("yyyy/MM/dd"), totalPrice = r.price * r.quantity });
+
+            return JsonSerializer.Serialize(query);
         }
     }
 }

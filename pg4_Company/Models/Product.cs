@@ -29,8 +29,14 @@ namespace Project_TFM10304.Models
         public string Description_S { get; set; }
         //詳述
         public string Description_L { get; set; }
+        public string Description_L_1 { get; set; }
+        public string Description_L_2 { get; set; }
+        public string Description_L_3 { get; set; }
+        public string Description_L_4 { get; set; }
+        public string Description_L_5 { get; set; }
         //種類
         public string Type { get; set; }
+        public string Location { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public ICollection<ProductPic> ProductPic { get; set; }

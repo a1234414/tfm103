@@ -326,6 +326,21 @@ namespace pg4_Company.Migrations
                     b.Property<string>("Description_L")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Description_L_1")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Description_L_2")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Description_L_3")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Description_L_4")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Description_L_5")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Description_S")
                         .HasColumnType("nvarchar(max)");
 
@@ -334,6 +349,9 @@ namespace pg4_Company.Migrations
 
                     b.Property<bool>("IsSold")
                         .HasColumnType("bit");
+
+                    b.Property<string>("Location")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");

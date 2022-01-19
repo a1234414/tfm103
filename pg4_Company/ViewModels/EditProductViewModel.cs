@@ -14,9 +14,18 @@ namespace pg4_Company.ViewModels
         [Required]
         public int Price { set; get; }
         public bool IsSold { set; get; }
+
+        public string Type { set; get; }
+
+        public string Location { set; get; }
         [Required]
         public string Description_S { set; get; }
         public string Description_L { set; get; }
+        public string Description_L_1 { set; get; }
+        public string Description_L_2{ set; get; }
+        public string Description_L_3 { set; get; }
+        public string Description_L_4 { set; get; }
+        public string Description_L_5 { set; get; }
         [Required]
         public DateTime StartDate { get; set; }
         [Required]
